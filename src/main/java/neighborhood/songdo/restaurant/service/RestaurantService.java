@@ -8,6 +8,8 @@ import neighborhood.songdo.restaurant.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
@@ -27,5 +29,11 @@ public class RestaurantService {
 
         restaurantRepository.save(restaurant);
         return RestaurantResDto.from(restaurant);
+    }
+
+    public RestaurantResDto getRestaurant(Long id) {
+        Restaurant findRestaurant = restaurantRepository.findById(id)
+                .orElseThrow();
+        return RestaurantResDto.from(findRestaurant);
     }
 }

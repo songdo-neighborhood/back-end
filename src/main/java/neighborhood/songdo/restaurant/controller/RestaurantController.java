@@ -7,10 +7,7 @@ import neighborhood.songdo.restaurant.dto.RestaurantResDto;
 import neighborhood.songdo.restaurant.service.RestaurantService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/restaurants")
@@ -24,5 +21,12 @@ public class RestaurantController {
             @Valid @RequestBody RestaurantCreateReqDto restaurantCreateReqDto) {
         RestaurantResDto dto = restaurantService.createRestaurant(restaurantCreateReqDto);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<RestaurantResDto> getRestaurant(
+            @PathVariable Long id) {
+        RestaurantResDto dto = restaurantService.getRestaurant(id);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }
