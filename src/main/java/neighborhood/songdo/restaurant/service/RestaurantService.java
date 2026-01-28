@@ -1,13 +1,18 @@
 package neighborhood.songdo.restaurant.service;
 
 import lombok.RequiredArgsConstructor;
+import neighborhood.songdo.common.dto.CursorPage;
 import neighborhood.songdo.common.exception.CustomException;
 import neighborhood.songdo.restaurant.domain.Restaurant;
 import neighborhood.songdo.restaurant.dto.RestaurantCreateReqDto;
 import neighborhood.songdo.restaurant.dto.RestaurantResDto;
 import neighborhood.songdo.restaurant.repository.RestaurantRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 import static neighborhood.songdo.common.exception.ErrorCode.ENTITY_NOT_FOUND;
 
@@ -32,9 +37,29 @@ public class RestaurantService {
         return RestaurantResDto.from(restaurant);
     }
 
-    public RestaurantResDto getRestaurant(Long id) {
+    public RestaurantResDto getRestaurantById(Long id) {
         Restaurant findRestaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
         return RestaurantResDto.from(findRestaurant);
+    }
+
+    public CursorPage<RestaurantResDto> getRestaurants(Long cursor, int size) {
+        Pageable pageable = PageRequest.of(0, size + 1);
+
+        List<Restaurant> restaurants = cursor == null
+                ? restaurantRepository.findAllByOrderByIdDesc(pageable)
+                : restaurantRepository.findByIdLessThanOrderByIdDesc(cursor, pageable);
+
+        boolean hasNext = restaurants.size() > size;
+        List<RestaurantResDto> content = restaurants.stream()
+                .limit(size)
+                .map(RestaurantResDto::from)
+                .toList();
+
+        String nextCursor = hasNext && !content.isEmpty()
+                ? String.valueOf(content.getLast().getId())
+                : null;
+
+        return CursorPage.of(content, nextCursor, hasNext);
     }
 }

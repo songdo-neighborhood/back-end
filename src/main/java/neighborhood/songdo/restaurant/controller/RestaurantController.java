@@ -2,6 +2,7 @@ package neighborhood.songdo.restaurant.controller;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import neighborhood.songdo.common.dto.CursorPage;
 import neighborhood.songdo.restaurant.dto.RestaurantCreateReqDto;
 import neighborhood.songdo.restaurant.dto.RestaurantResDto;
 import neighborhood.songdo.restaurant.service.RestaurantService;
@@ -24,9 +25,17 @@ public class RestaurantController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<RestaurantResDto> getRestaurant(
+    public ResponseEntity<RestaurantResDto> getRestaurantById(
             @PathVariable Long id) {
-        RestaurantResDto dto = restaurantService.getRestaurant(id);
+        RestaurantResDto dto = restaurantService.getRestaurantById(id);
         return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<CursorPage<RestaurantResDto>> getRestaurants(
+            @RequestParam(required = false) Long cursor,
+            @RequestParam(defaultValue = "10") int size) {
+        CursorPage<RestaurantResDto> page = restaurantService.getRestaurants(cursor, size);
+        return new ResponseEntity<>(page, HttpStatus.OK);
     }
 }
