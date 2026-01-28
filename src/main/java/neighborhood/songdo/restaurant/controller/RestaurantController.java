@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import neighborhood.songdo.common.dto.CursorPage;
 import neighborhood.songdo.restaurant.dto.RestaurantCreateReqDto;
 import neighborhood.songdo.restaurant.dto.RestaurantResDto;
+import neighborhood.songdo.restaurant.dto.RestaurantThumbResDto;
 import neighborhood.songdo.restaurant.service.RestaurantService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,10 +33,10 @@ public class RestaurantController {
     }
 
     @GetMapping
-    public ResponseEntity<CursorPage<RestaurantResDto>> getRestaurants(
+    public ResponseEntity<CursorPage<RestaurantThumbResDto>> getRestaurants(
             @RequestParam(required = false) Long cursor,
             @RequestParam(defaultValue = "10") int size) {
-        CursorPage<RestaurantResDto> page = restaurantService.getRestaurants(cursor, size);
+        CursorPage<RestaurantThumbResDto> page = restaurantService.getRestaurants(cursor, size);
         return new ResponseEntity<>(page, HttpStatus.OK);
     }
 }

@@ -6,6 +6,7 @@ import neighborhood.songdo.common.exception.CustomException;
 import neighborhood.songdo.restaurant.domain.Restaurant;
 import neighborhood.songdo.restaurant.dto.RestaurantCreateReqDto;
 import neighborhood.songdo.restaurant.dto.RestaurantResDto;
+import neighborhood.songdo.restaurant.dto.RestaurantThumbResDto;
 import neighborhood.songdo.restaurant.repository.RestaurantRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +44,7 @@ public class RestaurantService {
         return RestaurantResDto.from(findRestaurant);
     }
 
-    public CursorPage<RestaurantResDto> getRestaurants(Long cursor, int size) {
+    public CursorPage<RestaurantThumbResDto> getRestaurants(Long cursor, int size) {
         Pageable pageable = PageRequest.of(0, size + 1);
 
         List<Restaurant> restaurants = cursor == null
@@ -51,9 +52,9 @@ public class RestaurantService {
                 : restaurantRepository.findByIdLessThanOrderByIdDesc(cursor, pageable);
 
         boolean hasNext = restaurants.size() > size;
-        List<RestaurantResDto> content = restaurants.stream()
+        List<RestaurantThumbResDto> content = restaurants.stream()
                 .limit(size)
-                .map(RestaurantResDto::from)
+                .map(RestaurantThumbResDto::from)
                 .toList();
 
         String nextCursor = hasNext && !content.isEmpty()
