@@ -1,6 +1,7 @@
 package neighborhood.songdo.restaurant.service;
 
 import lombok.RequiredArgsConstructor;
+import neighborhood.songdo.common.exception.CustomException;
 import neighborhood.songdo.restaurant.domain.Restaurant;
 import neighborhood.songdo.restaurant.dto.RestaurantCreateReqDto;
 import neighborhood.songdo.restaurant.dto.RestaurantResDto;
@@ -8,7 +9,7 @@ import neighborhood.songdo.restaurant.repository.RestaurantRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import static neighborhood.songdo.common.exception.ErrorCode.ENTITY_NOT_FOUND;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class RestaurantService {
 
     public RestaurantResDto getRestaurant(Long id) {
         Restaurant findRestaurant = restaurantRepository.findById(id)
-                .orElseThrow();
+                .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
         return RestaurantResDto.from(findRestaurant);
     }
 }
