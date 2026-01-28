@@ -78,4 +78,9 @@ public class RestaurantService {
         );
         return RestaurantResDto.from(findRestaurant);
     }
+
+    @Transactional
+    public void deleteRestaurant(Long id) {
+        restaurantRepository.deleteById(id);
+    }
 }

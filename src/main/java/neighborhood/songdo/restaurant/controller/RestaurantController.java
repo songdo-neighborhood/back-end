@@ -48,4 +48,11 @@ public class RestaurantController {
         RestaurantResDto dto = restaurantService.updateRestaurant(id, restaurantUpdateReqDto);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteRestaurant(
+            @PathVariable Long id) {
+        restaurantService.deleteRestaurant(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
