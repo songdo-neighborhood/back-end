@@ -31,4 +31,20 @@ public class Restaurant {
 
     @Column(name = "end_time")
     private OffsetDateTime endTime;
+
+    public static Restaurant createRestaurant(
+            String title,
+            String address,
+            String description,
+            OffsetDateTime startTime,
+            OffsetDateTime endTime
+    ) {
+        return Restaurant.builder()
+                .title(title)
+                .address(address)
+                .description(description)
+                .startTime(startTime)
+                .endTime(endTime)
+                .build();
+    }
 }
