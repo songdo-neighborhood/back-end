@@ -1,6 +1,7 @@
 package neighborhood.songdo.restaurant.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.OffsetDateTime;
@@ -46,5 +47,19 @@ public class Restaurant {
                 .startTime(startTime)
                 .endTime(endTime)
                 .build();
+    }
+
+    public void update(
+            String title,
+            String address,
+            String description,
+            OffsetDateTime startTime,
+            OffsetDateTime endTime
+    ) {
+        this.title = title;
+        this.address = address;
+        this.description = description;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 }

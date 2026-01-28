@@ -6,6 +6,7 @@ import neighborhood.songdo.common.dto.CursorPage;
 import neighborhood.songdo.restaurant.dto.RestaurantCreateReqDto;
 import neighborhood.songdo.restaurant.dto.RestaurantResDto;
 import neighborhood.songdo.restaurant.dto.RestaurantThumbResDto;
+import neighborhood.songdo.restaurant.dto.RestaurantUpdateReqDto;
 import neighborhood.songdo.restaurant.service.RestaurantService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,5 +39,13 @@ public class RestaurantController {
             @RequestParam(defaultValue = "10") int size) {
         CursorPage<RestaurantThumbResDto> page = restaurantService.getRestaurants(cursor, size);
         return new ResponseEntity<>(page, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<RestaurantResDto> updateRestaurant(
+            @PathVariable Long id,
+            @Valid @RequestBody RestaurantUpdateReqDto restaurantUpdateReqDto) {
+        RestaurantResDto dto = restaurantService.updateRestaurant(id, restaurantUpdateReqDto);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 }
