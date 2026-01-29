@@ -1,0 +1,86 @@
+package neighborhood.songdo.restaurant.service;
+
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import neighborhood.songdo.common.dto.CursorPage;
+import neighborhood.songdo.common.exception.CustomException;
+import neighborhood.songdo.restaurant.domain.Restaurant;
+import neighborhood.songdo.restaurant.dto.RestaurantCreateReqDto;
+import neighborhood.songdo.restaurant.dto.RestaurantResDto;
+import neighborhood.songdo.restaurant.dto.RestaurantThumbResDto;
+import neighborhood.songdo.restaurant.dto.RestaurantUpdateReqDto;
+import neighborhood.songdo.restaurant.repository.RestaurantRepository;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static neighborhood.songdo.common.exception.ErrorCode.ENTITY_NOT_FOUND;
+
+@Transactional(readOnly = true)
+@RequiredArgsConstructor
+@Service
+public class RestaurantService {
+
+    private final RestaurantRepository restaurantRepository;
+
+    @Transactional
+    public RestaurantResDto createRestaurant(RestaurantCreateReqDto dto) {
+        Restaurant restaurant = Restaurant.createRestaurant(
+                dto.getTitle(),
+                dto.getAddress(),
+                dto.getDescription(),
+                dto.getStartTime(),
+                dto.getEndTime()
+        );
+
+        restaurantRepository.save(restaurant);
+        return RestaurantResDto.from(restaurant);
+    }
+
+    public RestaurantResDto getRestaurantById(Long id) {
+        Restaurant findRestaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
+        return RestaurantResDto.from(findRestaurant);
+    }
+
+    public CursorPage<RestaurantThumbResDto> getRestaurants(Long cursor, int size) {
+        Pageable pageable = PageRequest.of(0, size + 1);
+
+        List<Restaurant> restaurants = cursor == null
+                ? restaurantRepository.findAllByOrderByIdDesc(pageable)
+                : restaurantRepository.findByIdLessThanOrderByIdDesc(cursor, pageable);
+
+        boolean hasNext = restaurants.size() > size;
+        List<RestaurantThumbResDto> content = restaurants.stream()
+                .limit(size)
+                .map(RestaurantThumbResDto::from)
+                .toList();
+
+        String nextCursor = hasNext && !content.isEmpty()
+                ? String.valueOf(content.getLast().getId())
+                : null;
+
+        return CursorPage.of(content, nextCursor, hasNext);
+    }
+
+    @Transactional
+    public RestaurantResDto updateRestaurant(Long id, RestaurantUpdateReqDto dto) {
+        Restaurant findRestaurant = restaurantRepository.findById(id)
+                .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
+        findRestaurant.update(dto.getTitle(),
+                dto.getAddress(),
+                dto.getDescription(),
+                dto.getStartTime(),
+                dto.getEndTime()
+        );
+        return RestaurantResDto.from(findRestaurant);
+    }
+
+    @Transactional
+    public void deleteRestaurant(Long id) {
+        restaurantRepository.deleteById(id);
+    }
+}
