@@ -17,6 +17,8 @@ public enum ErrorCode {
     ENTITY_NOT_FOUND(404, "엔티티를 찾을 수 없습니다."),
     DUPLICATE_BOOKMARK(409, "이미 북마크된 리소스입니다."),
 
+    ALREADY_RESERVATION(404, "이미 예약된 날짜입니다."),
+
     // 500 INTERNAL SERVER ERROR
     INTERNAL_SERVER_ERROR(500, "서버 에러입니다. 서버 관리자에게 연락해주세요.");
 
