@@ -1,6 +1,5 @@
 package neighborhood.songdo.restaurant.service;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import neighborhood.songdo.common.dto.CursorPage;
 import neighborhood.songdo.common.exception.CustomException;
