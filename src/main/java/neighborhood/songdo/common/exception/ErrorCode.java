@@ -12,6 +12,8 @@ public enum ErrorCode {
     EMPTY_FILE(400, "파일을 등록해주세요"),
 
     // 404 NOT_FOUND 잘못된 리소스 접근
+    ORDER_AMOUNT_UPDATE_NOT_ALLOWED(400, "현재 주문 상태에서는 금액을 변경할 수 없습니다."),
+    INVALID_ORDER_STATUS_TRANSITION(400, "허용되지 않는 주문 상태 변경입니다."),
     FORBIDDEN(403, "접근 권한이 없습니다."),
     RESOURCE_NOT_FOUND(404, "리소스를 찾을 수 없습니다."),
     ENTITY_NOT_FOUND(404, "엔티티를 찾을 수 없습니다."),
