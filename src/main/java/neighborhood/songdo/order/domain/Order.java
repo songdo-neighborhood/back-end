@@ -64,7 +64,7 @@ public class Order extends BaseEntity {
 
     public void markPaymentPending() {
         validatePaymentPendingTransition();
-        this.orderStatus = OrderStatus.PAYMENT_PENDING;
+        this.orderStatus = OrderStatus.PENDING;
     }
 
     public void markPaid() {
@@ -88,7 +88,7 @@ public class Order extends BaseEntity {
     }
 
     private void validatePaidTransition() {
-        if (orderStatus != OrderStatus.PAYMENT_PENDING) {
+        if (orderStatus != OrderStatus.PENDING) {
             throw new CustomException(INVALID_ORDER_STATUS_TRANSITION);
         }
     }
