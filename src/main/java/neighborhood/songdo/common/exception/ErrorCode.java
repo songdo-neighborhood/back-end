@@ -18,6 +18,8 @@ public enum ErrorCode {
     FORBIDDEN(403, "접근 권한이 없습니다."),
     RESOURCE_NOT_FOUND(404, "리소스를 찾을 수 없습니다."),
     ENTITY_NOT_FOUND(404, "엔티티를 찾을 수 없습니다."),
+    USER_ENTITY_NOT_FOUND(404, "유저를 찾을 수 없습니다."),
+    RESERVATION_ENTITY_NOT_FOUND(404, "예약을 찾을 수 없습니다."),
     DUPLICATE_BOOKMARK(409, "이미 북마크된 리소스입니다."),
 
     ALREADY_RESERVATION(404, "이미 예약된 날짜입니다."),

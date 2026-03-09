@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import neighborhood.songdo.common.domain.BaseEntity;
 import neighborhood.songdo.common.exception.CustomException;
@@ -20,6 +21,7 @@ import neighborhood.songdo.common.exception.CustomException;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
 public class Order extends BaseEntity {
 
     @Id
