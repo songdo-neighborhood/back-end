@@ -16,9 +16,12 @@ public enum ErrorCode {
     INVALID_ORDER_STATUS_TRANSITION(400, "허용되지 않는 주문 상태 변경입니다."),
     INVALID_PAYMENT_STATUS_TRANSITION(400, "허용되지 않는 결제 상태 변경입니다"),
     FORBIDDEN(403, "접근 권한이 없습니다."),
+
     RESOURCE_NOT_FOUND(404, "리소스를 찾을 수 없습니다."),
     ENTITY_NOT_FOUND(404, "엔티티를 찾을 수 없습니다."),
     USER_ENTITY_NOT_FOUND(404, "유저를 찾을 수 없습니다."),
+    ORDER_ENTITY_NOT_FOUND(404, "주문을 찾을 수 없습니다."),
+    PAYMENT_ENTITY_NOT_FOUND(404, "결제를 찾을 수 없습니다."),
     RESERVATION_ENTITY_NOT_FOUND(404, "예약을 찾을 수 없습니다."),
     DUPLICATE_BOOKMARK(409, "이미 북마크된 리소스입니다."),
 

@@ -9,6 +9,9 @@ import neighborhood.songdo.order.domain.Order;
 import neighborhood.songdo.order.dto.OrderCreateReqDto;
 import neighborhood.songdo.order.dto.OrderResDto;
 import neighborhood.songdo.order.repository.OrderRepository;
+import neighborhood.songdo.payment.domain.Payment;
+import neighborhood.songdo.payment.domain.PaymentMethod;
+import neighborhood.songdo.payment.repository.PaymentRepository;
 import neighborhood.songdo.reservation.repository.ReservationRepository;
 import neighborhood.songdo.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,7 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
+    private final PaymentRepository paymentRepository;
     private final ReservationRepository reservationRepository;
 
     public OrderResDto createOrder(OrderCreateReqDto requestDto) {
@@ -34,6 +38,9 @@ public class OrderService {
                 requestDto.amount());
 
         Order savedOrder = orderRepository.save(order);
+        paymentRepository.save(
+                Payment.createPayment(savedOrder.getId(), PaymentMethod.TOSS_PAY, order.getAmount())
+        );
 
         return OrderResDto.from(savedOrder);
     }
