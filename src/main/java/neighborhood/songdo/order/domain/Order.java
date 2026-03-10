@@ -79,6 +79,10 @@ public class Order extends BaseEntity {
         this.orderStatus = OrderStatus.CANCELED;
     }
 
+    public boolean isPayable() {
+        return this.orderStatus == OrderStatus.CREATED;
+    }
+
     private boolean isAmountChangeable() {
         return orderStatus == OrderStatus.CREATED;
     }

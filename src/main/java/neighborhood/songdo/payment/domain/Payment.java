@@ -12,6 +12,7 @@ import jakarta.persistence.Id;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import neighborhood.songdo.common.domain.BaseEntity;
 import neighborhood.songdo.common.exception.CustomException;
@@ -20,6 +21,7 @@ import neighborhood.songdo.common.exception.CustomException;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Getter
 public class Payment extends BaseEntity {
 
     @Id
@@ -88,6 +90,14 @@ public class Payment extends BaseEntity {
         validateRefundTransition();
         this.refundedAt = OffsetDateTime.now();
         this.paymentStatus = PaymentStatus.REFUNDED;
+    }
+
+    public boolean isApproved() {
+        return paymentStatus == PaymentStatus.APPROVED;
+    }
+
+    public boolean isEqualAmount(Long amount) {
+        return this.amount.equals(amount);
     }
 
     private void validatePendingTransition() {
