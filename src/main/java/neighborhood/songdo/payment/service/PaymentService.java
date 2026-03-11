@@ -5,7 +5,6 @@ import static neighborhood.songdo.common.exception.ErrorCode.ORDER_NOT_PAYABLE;
 import static neighborhood.songdo.common.exception.ErrorCode.PAYMENT_ALREADY_APPROVED;
 import static neighborhood.songdo.common.exception.ErrorCode.PAYMENT_AMOUNT_MISMATCH;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import neighborhood.songdo.common.exception.CustomException;
 import neighborhood.songdo.order.domain.Order;
@@ -15,18 +14,20 @@ import neighborhood.songdo.payment.dto.PaymentConfirmRequest;
 import neighborhood.songdo.payment.external.toss.TossPaymentClient;
 import neighborhood.songdo.payment.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class PaymentService {
 
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
     private final TossPaymentClient tossPaymentClient;
 
+    @Transactional
     public void confirm(PaymentConfirmRequest request) {
-        Order order = orderRepository.findByMerchantOrderId(request.merchantOrderId())
+        Order order = orderRepository.findByMerchantOrderId(request.orderId())
                 .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
         Payment payment = paymentRepository.findByOrderId(order.getId())
                 .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));

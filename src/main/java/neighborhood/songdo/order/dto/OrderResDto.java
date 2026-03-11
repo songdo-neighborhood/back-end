@@ -9,7 +9,7 @@ public record OrderResDto(
         Long userId,
         Long amount,
         OrderStatus orderStatus,
-        String merchantOrderId
+        String orderId
 ) {
     public static OrderResDto from(Order order) {
         return new OrderResDto(
