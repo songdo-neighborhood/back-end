@@ -28,64 +28,101 @@
 <h1>Toss 결제 테스트</h1>
 <p>아래 버튼을 클릭하면 Toss Payment Widget이 실행됩니다.</p>
 
-<!--<label>-->
-<!--    상품 ID:-->
-<!--    <input type="text" id="product-id" placeholder="상품 UUID">-->
-<!--</label>-->
-<!--<br/>-->
-<!--<label>-->
-<!--    구매자 ID:-->
-<!--    <input type="text" id="member-id" placeholder="구매자 UUID">-->
-<!--</label>-->
+<label>
+    주문 ID (숫자):
+    <input type="number" id="order-id" placeholder="예: 1" value="1">
+</label>
 <br/>
-<button id="pay-button">주문 생성 후 결제하기</button>
+<label>
+    결제 금액:
+    <input type="number" id="amount" placeholder="예: 1000" value="1000">
+</label>
+<br/>
+<button id="pay-button">결제하기</button>
+<div id="debug-info" style="margin-top: 1rem; padding: 1rem; background: #f5f5f5; border-radius: 4px;"></div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', async function () {
+    const debugLog = (message) => {
+        console.log(message);
+        const debugDiv = document.getElementById('debug-info');
+        debugDiv.innerHTML += `<div>${new Date().toLocaleTimeString()}: ${message}</div>`;
+    };
+
+    document.addEventListener('DOMContentLoaded', function () {
+        debugLog('페이지 로드 완료');
+
+        let tossPayments;
+
         try {
+            debugLog('TossPayments 확인 중...');
+
             if (typeof window.TossPayments !== 'function') {
-                throw new Error('TossPayments is not defined. 스크립트가 로드되었는지 확인하세요.');
+                throw new Error('TossPayments is not defined. 스크립트가 로드되지 않았습니다.');
             }
 
-            const clientKey = 'test_ck_ma60RZblrqNevMlKYBgM8wzYWBn1'; // 테스트 클라이언트 키
-            const tossPayments = window.TossPayments(clientKey);
-            const amount = 1000;
+            debugLog('TossPayments 로드 성공');
 
-            document.getElementById('pay-button').addEventListener('click', async function () {
-                const orderId = 'ORDER_1763694353581';
-                tossPayments.requestPayment('간편결제', {
-                    company: '토스페이',
-                    orderId: orderId,
-                    amount,
-                    orderName: '테스트 상품',
-                    successUrl: 'http://localhost:8080/payments/success.html',
-                    failUrl: 'http://localhost:8080/payments/fail.html'
-                });
-            });
+            const clientKey = 'test_ck_ma60RZblrqNevMlKYBgM8wzYWBn1';
+            tossPayments = window.TossPayments(clientKey);
 
-            async function createOrder() {
-                const productId = document.getElementById('product-id').value;
-                const memberId = document.getElementById('member-id').value;
-                if (!productId || !memberId) {
-                    alert('상품 ID와 구매자 ID를 입력하세요.');
-                    return null;
-                }
-                const response = await fetch('/api/v1/orders', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ productId, memberId })
-                });
-                if (!response.ok) {
-                    alert('주문 생성 실패');
-                    return null;
-                }
-                const data = await response.json();
-                return data.data.id;
-            }
+            debugLog('TossPayments 인스턴스 생성 완료');
+
         } catch (error) {
+            debugLog('❌ 초기화 실패: ' + error.message);
             console.error('Toss 위젯 초기화 실패:', error);
-            alert('Toss 위젯을 불러오지 못했습니다. 콘솔을 확인하세요.');
+            alert('Toss 위젯을 불러오지 못했습니다: ' + error.message);
+            return;
         }
+
+        const payButton = document.getElementById('pay-button');
+        debugLog('결제 버튼 이벤트 리스너 등록');
+
+        payButton.addEventListener('click', function () {
+            debugLog('🔘 결제 버튼 클릭됨!');
+
+            try {
+                const orderIdInput = document.getElementById('order-id').value;
+                const amountInput = document.getElementById('amount').value;
+
+                debugLog(`입력값 - 주문ID: ${orderIdInput}, 금액: ${amountInput}`);
+
+                if (!orderIdInput || !amountInput) {
+                    alert('주문 ID와 금액을 입력하세요.');
+                    return;
+                }
+
+                const orderId = Number(orderIdInput);
+                const amount = Number(amountInput);
+
+                debugLog(`결제 요청 시작 - orderId: ${orderId}, amount: ${amount}`);
+
+                const paymentData = {
+                    company: '토스페이',
+                    orderId: String(orderId),
+                    amount: amount,
+                    orderName: '테스트 상품',
+                    successUrl: window.location.origin + '/payments/success.html',
+                    failUrl: window.location.origin + '/payments/fail.html'
+                };
+
+                debugLog('결제 데이터: ' + JSON.stringify(paymentData));
+                debugLog('TossPayments.requestPayment 호출 중...');
+
+                tossPayments.requestPayment('간편결제', paymentData)
+                    .catch(function(error) {
+                        debugLog('❌ 결제 요청 실패: ' + error.message);
+                        console.error('결제 요청 에러:', error);
+                        alert('결제 요청 실패: ' + error.message);
+                    });
+
+            } catch (error) {
+                debugLog('❌ 에러 발생: ' + error.message);
+                console.error('결제 버튼 클릭 에러:', error);
+                alert('오류가 발생했습니다: ' + error.message);
+            }
+        });
+
+        debugLog('✅ 모든 초기화 완료');
     });
 </script>
 </body>

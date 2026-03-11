@@ -29,15 +29,21 @@
 
     async function notifyFailure() {
         try {
-            const response = await fetch('/api/v1/payments/fail', {
+            const response = await fetch('/api/payments/fail', {  // 백엔드 경로에 맞춤
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
             const data = await response.json();
-            document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            document.getElementById('result').textContent = '✅ 실패 기록 완료:\n' + JSON.stringify(data, null, 2);
         } catch (error) {
-            document.getElementById('result').textContent = '실패 내역 전송 실패: ' + error;
+            console.error('실패 내역 전송 오류:', error);
+            document.getElementById('result').textContent = '⚠️  실패 내역 전송 실패: ' + error.message + '\n(서버에 /api/payments/fail 엔드포인트가 없을 수 있습니다)';
         }
     }
 

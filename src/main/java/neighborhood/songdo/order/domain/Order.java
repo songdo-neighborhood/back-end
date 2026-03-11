@@ -18,6 +18,8 @@ import lombok.NoArgsConstructor;
 import neighborhood.songdo.common.domain.BaseEntity;
 import neighborhood.songdo.common.exception.CustomException;
 
+import java.util.UUID;
+
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
@@ -30,6 +32,9 @@ public class Order extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "order_id")
     private Long id;
+
+    @Column(name = "toss_order_id", updatable = false)
+    private String tossOrderId;
 
     @Column(name = "reservation_id", nullable = false, updatable = false)
     private Long reservationId;
@@ -50,6 +55,7 @@ public class Order extends BaseEntity {
            Long amount
     ) {
         return Order.builder()
+                .tossOrderId(UUID.randomUUID().toString())
                 .reservationId(reservationId)
                 .userId(userId)
                 .amount(amount)

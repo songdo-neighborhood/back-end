@@ -10,6 +10,7 @@ public enum ErrorCode {
     // 400 BAD_REQUEST 잘못된 요청
     INVALID_PARAMETER(400, "파라미터 값을 확인해주세요."),
     EMPTY_FILE(400, "파일을 등록해주세요"),
+    AMOUNT_MISMATCH(400, "금액이 일치하지 않습니다."),
 
     // 404 NOT_FOUND 잘못된 리소스 접근
     ORDER_AMOUNT_UPDATE_NOT_ALLOWED(400, "현재 주문 상태에서는 금액을 변경할 수 없습니다."),

@@ -12,10 +12,12 @@ import jakarta.persistence.Id;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import neighborhood.songdo.common.domain.BaseEntity;
 import neighborhood.songdo.common.exception.CustomException;
 
+@Getter
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor

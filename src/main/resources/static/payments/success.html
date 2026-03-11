@@ -17,22 +17,28 @@
     const params = new URLSearchParams(window.location.search);
     const payload = {
         paymentKey: params.get('paymentKey'),
-        orderId: params.get('orderId'),
+        orderId: Number(params.get('orderId')),  // Long 타입으로 변환
         amount: Number(params.get('amount'))
     };
     document.getElementById('payload').textContent = JSON.stringify(payload, null, 2);
 
     async function confirmPayment() {
         try {
-            const response = await fetch('/api/v1/payments/confirm', {
+            const response = await fetch('/api/payments/confirm', {  // 백엔드 경로에 맞춤
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
+
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+            }
+
             const data = await response.json();
-            document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+            document.getElementById('result').textContent = '✅ 승인 완료:\n' + JSON.stringify(data, null, 2);
         } catch (error) {
-            document.getElementById('result').textContent = '결제 승인 요청 실패: ' + error;
+            console.error('결제 승인 오류:', error);
+            document.getElementById('result').textContent = '❌ 결제 승인 요청 실패: ' + error.message;
         }
     }
 

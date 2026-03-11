@@ -16,8 +16,8 @@ spring:
         show_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
 
-  # JSP 설정
-  mvc:
-    view:
-      prefix: /WEB-INF/views/
-      suffix: .jsp
+toss:
+  payments:
+    client-key: test_ck_ma60RZblrqNevMlKYBgM8wzYWBn1
+    secret-key: test_ck_ma60RZblrqNevMlKYBgM8wzYWBn1
+    base-url: https://api.tosspayments.com

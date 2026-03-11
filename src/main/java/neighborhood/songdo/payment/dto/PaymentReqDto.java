@@ -7,7 +7,7 @@ public record PaymentReqDto(
         String paymentKey,
 
         @NotNull
-        Long orderId,
+        String tossOrderId,
 
         @NotNull
         Long amount
