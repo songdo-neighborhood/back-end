@@ -80,7 +80,7 @@ public class Order extends BaseEntity {
     }
 
     public boolean isPayable() {
-        return this.orderStatus == OrderStatus.CREATED;
+        return orderStatus == OrderStatus.CREATED;
     }
 
     private boolean isAmountChangeable() {

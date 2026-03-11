@@ -12,6 +12,7 @@ import neighborhood.songdo.order.domain.Order;
 import neighborhood.songdo.order.repository.OrderRepository;
 import neighborhood.songdo.payment.domain.Payment;
 import neighborhood.songdo.payment.dto.PaymentConfirmRequest;
+import neighborhood.songdo.payment.external.toss.TossPaymentClient;
 import neighborhood.songdo.payment.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,7 @@ public class PaymentService {
 
     private final OrderRepository orderRepository;
     private final PaymentRepository paymentRepository;
+    private final TossPaymentClient tossPaymentClient;
 
     public void confirm(PaymentConfirmRequest request) {
         Order order = orderRepository.findById(request.orderId())
@@ -29,12 +31,14 @@ public class PaymentService {
         Payment payment = paymentRepository.findByOrderId(order.getId())
                 .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
 
-
         validateAlreadyApproved(payment);
         validateOrderState(order);
         validatePaymentAmount(request, payment);
 
-        //tossPaymentClient.confirm(request);
+        payment.markPending();
+        order.markPaymentPending();
+
+        tossPaymentClient.confirm(request);
 
         order.markPaid();
         payment.approve(request.paymentKey());
