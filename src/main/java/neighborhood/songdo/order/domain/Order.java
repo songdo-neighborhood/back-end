@@ -44,16 +44,21 @@ public class Order extends BaseEntity {
     @Column(name = "order_status", nullable = false)
     private OrderStatus orderStatus;
 
+    @Column(name = "merchant_order_id", nullable = false, updatable = false, unique = true)
+    private String merchantOrderId;
+
     public static Order createOrder(
            Long reservationId,
            Long userId,
-           Long amount
+           Long amount,
+           String merchantOrderId
     ) {
         return Order.builder()
                 .reservationId(reservationId)
                 .userId(userId)
                 .amount(amount)
                 .orderStatus(OrderStatus.CREATED)
+                .merchantOrderId(merchantOrderId)
                 .build();
     }
 
@@ -77,6 +82,10 @@ public class Order extends BaseEntity {
     public void cancel() {
         validateCancelTransition();
         this.orderStatus = OrderStatus.CANCELED;
+    }
+
+    public boolean isPayable() {
+        return orderStatus == OrderStatus.CREATED;
     }
 
     private boolean isAmountChangeable() {

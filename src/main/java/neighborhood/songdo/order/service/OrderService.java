@@ -8,6 +8,7 @@ import neighborhood.songdo.common.exception.CustomException;
 import neighborhood.songdo.order.domain.Order;
 import neighborhood.songdo.order.dto.OrderCreateReqDto;
 import neighborhood.songdo.order.dto.OrderResDto;
+import neighborhood.songdo.order.generator.MerchantOrderIdGenerator;
 import neighborhood.songdo.order.repository.OrderRepository;
 import neighborhood.songdo.reservation.repository.ReservationRepository;
 import neighborhood.songdo.user.repository.UserRepository;
@@ -20,6 +21,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ReservationRepository reservationRepository;
+    private final MerchantOrderIdGenerator merchantIdGenerator;
 
     public OrderResDto createOrder(OrderCreateReqDto requestDto) {
         if (!reservationRepository.existsById(requestDto.reservationId())) {
@@ -31,7 +33,9 @@ public class OrderService {
 
         Order order = Order.createOrder(requestDto.reservationId(),
                 requestDto.userId(),
-                requestDto.amount());
+                requestDto.amount(),
+                merchantIdGenerator.generate()
+        );
 
         Order savedOrder = orderRepository.save(order);
 

@@ -8,8 +8,8 @@ public record OrderResDto(
         Long reservationId,
         Long userId,
         Long amount,
-        OrderStatus orderStatus
-
+        OrderStatus orderStatus,
+        String orderId
 ) {
     public static OrderResDto from(Order order) {
         return new OrderResDto(
@@ -17,7 +17,8 @@ public record OrderResDto(
                 order.getReservationId(),
                 order.getUserId(),
                 order.getAmount(),
-                order.getOrderStatus()
+                order.getOrderStatus(),
+                order.getMerchantOrderId()
         );
     }
 }
