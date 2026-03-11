@@ -4,7 +4,7 @@ import java.time.OffsetDateTime;
 
 public record TossConfirmResponse(
         String paymentKey,
-        Long orderId,
+        String orderId,
         String status,
         Long totalAmount,
         String method,

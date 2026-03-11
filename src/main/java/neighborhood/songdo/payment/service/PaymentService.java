@@ -26,7 +26,7 @@ public class PaymentService {
     private final TossPaymentClient tossPaymentClient;
 
     public void confirm(PaymentConfirmRequest request) {
-        Order order = orderRepository.findById(request.orderId())
+        Order order = orderRepository.findByMerchantOrderId(request.merchantOrderId())
                 .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
         Payment payment = paymentRepository.findByOrderId(order.getId())
                 .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));

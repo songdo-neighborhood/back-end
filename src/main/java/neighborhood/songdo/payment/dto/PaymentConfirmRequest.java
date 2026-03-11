@@ -1,6 +1,6 @@
 package neighborhood.songdo.payment.dto;
 
 public record PaymentConfirmRequest(String paymentKey,
-                                    Long orderId,
+                                    String merchantOrderId,
                                     Long amount) {
 }
