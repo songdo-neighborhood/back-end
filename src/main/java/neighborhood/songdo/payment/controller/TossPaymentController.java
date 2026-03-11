@@ -10,13 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping
+@RequestMapping("/api/payments")
 @RequiredArgsConstructor
 public class TossPaymentController {
 
     private final PaymentService paymentService;
 
-    @PostMapping("/payments/confirm")
+    @PostMapping("/confirm")
     public ResponseEntity<?> confirm(@RequestBody PaymentConfirmRequest request) {
         paymentService.confirm(request);
         return ResponseEntity.ok().build();
