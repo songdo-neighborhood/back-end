@@ -88,11 +88,25 @@ public class RestaurantService {
     public RestaurantResDto updateRestaurant(Long id, RestaurantUpdateReqDto dto) {
         Restaurant findRestaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
+        OperatingPolicy operatingPolicy = operatingPolicyRepository.findByRestaurantId(findRestaurant.getId())
+                .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
+
         findRestaurant.update(dto.getTitle(),
                 dto.getAddress(),
                 dto.getDescription()
         );
-        return RestaurantResDto.from(findRestaurant);
+
+        OperatingPolicyReqDto operatingPolicyReqDto = dto.getOperatingPolicyReqDto();
+        operatingPolicy.update(
+                operatingPolicy.getOpenTime(),
+                operatingPolicy.getCloseTime(),
+                operatingPolicy.getBreakStartTime(),
+                operatingPolicy.getBreakEndTime(),
+                operatingPolicy.getSlotUnit(),
+                operatingPolicy.getMaxCapacityPerSlot()
+        );
+
+        return RestaurantResDto.from(findRestaurant, operatingPolicy);
     }
 
     @Transactional
