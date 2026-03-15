@@ -37,7 +37,7 @@ public class RestaurantService {
                 dto.getDescription()
         );
 
-        restaurantRepository.save(restaurant);
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
 
         OperatingPolicyReqDto operatingPolicyReqDto = dto.getOperatingPolicyReqDto();
         OperatingPolicy policy = OperatingPolicy.createOperatingPolicy(
@@ -49,9 +49,9 @@ public class RestaurantService {
                 operatingPolicyReqDto.slotUnit(),
                 operatingPolicyReqDto.maxCapacitySlot()
         );
-        operatingPolicyRepository.save(policy);
+        OperatingPolicy savePolicy = operatingPolicyRepository.save(policy);
 
-        return RestaurantResDto.from(restaurant, policy);
+        return RestaurantResDto.from(savedRestaurant, savePolicy);
     }
 
     public RestaurantResDto getRestaurantById(Long id) {
@@ -98,12 +98,12 @@ public class RestaurantService {
 
         OperatingPolicyReqDto operatingPolicyReqDto = dto.getOperatingPolicyReqDto();
         operatingPolicy.update(
-                operatingPolicy.getOpenTime(),
-                operatingPolicy.getCloseTime(),
-                operatingPolicy.getBreakStartTime(),
-                operatingPolicy.getBreakEndTime(),
-                operatingPolicy.getSlotUnit(),
-                operatingPolicy.getMaxCapacityPerSlot()
+                operatingPolicyReqDto.openTime(),
+                operatingPolicyReqDto.closeTime(),
+                operatingPolicyReqDto.breakStartTime(),
+                operatingPolicyReqDto.breakEndTime(),
+                operatingPolicyReqDto.slotUnit(),
+                operatingPolicyReqDto.maxCapacitySlot()
         );
 
         return RestaurantResDto.from(findRestaurant, operatingPolicy);
