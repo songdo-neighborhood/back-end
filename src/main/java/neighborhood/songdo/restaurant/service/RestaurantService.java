@@ -57,7 +57,11 @@ public class RestaurantService {
     public RestaurantResDto getRestaurantById(Long id) {
         Restaurant findRestaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
-        return RestaurantResDto.from(findRestaurant);
+
+        OperatingPolicy operatingPolicy = operatingPolicyRepository.findByRestaurantId(findRestaurant.getId())
+                .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
+
+        return RestaurantResDto.from(findRestaurant, operatingPolicy);
     }
 
     public CursorPage<RestaurantThumbResDto> getRestaurants(Long cursor, int size) {
