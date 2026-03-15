@@ -9,4 +9,6 @@ import org.springframework.stereotype.Repository;
 public interface OperatingPolicyRepository extends JpaRepository<OperatingPolicy, Long> {
 
     Optional<OperatingPolicy> findByRestaurantId(Long restaurantId);
+
+    OperatingPolicy deleteByRestaurantId(Long restaurantId);
 }

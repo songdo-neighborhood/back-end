@@ -98,5 +98,6 @@ public class RestaurantService {
     @Transactional
     public void deleteRestaurant(Long id) {
         restaurantRepository.deleteById(id);
+        operatingPolicyRepository.deleteByRestaurantId(id);
     }
 }
