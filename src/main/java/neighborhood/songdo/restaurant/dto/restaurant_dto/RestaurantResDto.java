@@ -1,11 +1,11 @@
-package neighborhood.songdo.restaurant.dto;
+package neighborhood.songdo.restaurant.dto.restaurant_dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import neighborhood.songdo.restaurant.domain.OperatingPolicy;
 import neighborhood.songdo.restaurant.domain.Restaurant;
-
-import java.time.OffsetDateTime;
+import neighborhood.songdo.restaurant.dto.operating_policy_dto.OperatingPolicyResDto;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
@@ -19,17 +19,14 @@ public class RestaurantResDto {
 
     private String description;
 
-    private OffsetDateTime startTime;
+    private OperatingPolicyResDto operatingPolicyResDto;
 
-    private OffsetDateTime endTime;
-
-    public static RestaurantResDto from(Restaurant restaurant) {
+    public static RestaurantResDto from(Restaurant restaurant, OperatingPolicy operatingPolicy) {
         return new RestaurantResDto(
                 restaurant.getId(),
                 restaurant.getTitle(),
                 restaurant.getAddress(),
                 restaurant.getDescription(),
-                restaurant.getStartTime(),
-                restaurant.getEndTime());
+                OperatingPolicyResDto.from(operatingPolicy));
     }
 }
