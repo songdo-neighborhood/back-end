@@ -1,4 +1,4 @@
-package neighborhood.songdo.restaurant.dto;
+package neighborhood.songdo.restaurant.dto.restaurant_dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

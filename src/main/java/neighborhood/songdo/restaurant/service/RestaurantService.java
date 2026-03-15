@@ -3,11 +3,14 @@ package neighborhood.songdo.restaurant.service;
 import lombok.RequiredArgsConstructor;
 import neighborhood.songdo.common.dto.CursorPage;
 import neighborhood.songdo.common.exception.CustomException;
+import neighborhood.songdo.restaurant.domain.OperatingPolicy;
 import neighborhood.songdo.restaurant.domain.Restaurant;
-import neighborhood.songdo.restaurant.dto.RestaurantCreateReqDto;
-import neighborhood.songdo.restaurant.dto.RestaurantResDto;
-import neighborhood.songdo.restaurant.dto.RestaurantThumbResDto;
-import neighborhood.songdo.restaurant.dto.RestaurantUpdateReqDto;
+import neighborhood.songdo.restaurant.dto.operating_policy_dto.OperatingPolicyReqDto;
+import neighborhood.songdo.restaurant.dto.restaurant_dto.RestaurantCreateReqDto;
+import neighborhood.songdo.restaurant.dto.restaurant_dto.RestaurantResDto;
+import neighborhood.songdo.restaurant.dto.restaurant_dto.RestaurantThumbResDto;
+import neighborhood.songdo.restaurant.dto.restaurant_dto.RestaurantUpdateReqDto;
+import neighborhood.songdo.restaurant.repository.OperatingPolicyRepository;
 import neighborhood.songdo.restaurant.repository.RestaurantRepository;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -24,25 +27,41 @@ import static neighborhood.songdo.common.exception.ErrorCode.ENTITY_NOT_FOUND;
 public class RestaurantService {
 
     private final RestaurantRepository restaurantRepository;
+    private final OperatingPolicyRepository operatingPolicyRepository;
 
     @Transactional
     public RestaurantResDto createRestaurant(RestaurantCreateReqDto dto) {
         Restaurant restaurant = Restaurant.createRestaurant(
                 dto.getTitle(),
                 dto.getAddress(),
-                dto.getDescription(),
-                dto.getStartTime(),
-                dto.getEndTime()
+                dto.getDescription()
         );
 
-        restaurantRepository.save(restaurant);
-        return RestaurantResDto.from(restaurant);
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+
+        OperatingPolicyReqDto operatingPolicyReqDto = dto.getOperatingPolicyReqDto();
+        OperatingPolicy policy = OperatingPolicy.createOperatingPolicy(
+                restaurant.getId(),
+                operatingPolicyReqDto.openTime(),
+                operatingPolicyReqDto.closeTime(),
+                operatingPolicyReqDto.breakStartTime(),
+                operatingPolicyReqDto.breakEndTime(),
+                operatingPolicyReqDto.slotUnit(),
+                operatingPolicyReqDto.maxCapacitySlot()
+        );
+        OperatingPolicy savePolicy = operatingPolicyRepository.save(policy);
+
+        return RestaurantResDto.from(savedRestaurant, savePolicy);
     }
 
     public RestaurantResDto getRestaurantById(Long id) {
         Restaurant findRestaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
-        return RestaurantResDto.from(findRestaurant);
+
+        OperatingPolicy operatingPolicy = operatingPolicyRepository.findByRestaurantId(findRestaurant.getId())
+                .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
+
+        return RestaurantResDto.from(findRestaurant, operatingPolicy);
     }
 
     public CursorPage<RestaurantThumbResDto> getRestaurants(Long cursor, int size) {
@@ -69,17 +88,30 @@ public class RestaurantService {
     public RestaurantResDto updateRestaurant(Long id, RestaurantUpdateReqDto dto) {
         Restaurant findRestaurant = restaurantRepository.findById(id)
                 .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
+        OperatingPolicy operatingPolicy = operatingPolicyRepository.findByRestaurantId(findRestaurant.getId())
+                .orElseThrow(() -> new CustomException(ENTITY_NOT_FOUND));
+
         findRestaurant.update(dto.getTitle(),
                 dto.getAddress(),
-                dto.getDescription(),
-                dto.getStartTime(),
-                dto.getEndTime()
+                dto.getDescription()
         );
-        return RestaurantResDto.from(findRestaurant);
+
+        OperatingPolicyReqDto operatingPolicyReqDto = dto.getOperatingPolicyReqDto();
+        operatingPolicy.update(
+                operatingPolicyReqDto.openTime(),
+                operatingPolicyReqDto.closeTime(),
+                operatingPolicyReqDto.breakStartTime(),
+                operatingPolicyReqDto.breakEndTime(),
+                operatingPolicyReqDto.slotUnit(),
+                operatingPolicyReqDto.maxCapacitySlot()
+        );
+
+        return RestaurantResDto.from(findRestaurant, operatingPolicy);
     }
 
     @Transactional
     public void deleteRestaurant(Long id) {
         restaurantRepository.deleteById(id);
+        operatingPolicyRepository.deleteByRestaurantId(id);
     }
 }
